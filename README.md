@@ -1,9 +1,4 @@
-# Flutter Course
-
-https://fvm.app/
-
-
-## clean_flutter_app
+# clean_flutter_app
 
 A new Flutter project.
 
