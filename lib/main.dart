@@ -15,18 +15,34 @@ class QuestionApp extends StatefulWidget {
 
 class _QuestionAppState extends State<QuestionApp> {
   var _questionSelected = 0;
+  var _totalScore = 0;
   final _questions = const [
     {
       'text': "Qual é a sua cor favorita ?",
-      'responses': ['Preto', 'Vermelho', 'Verde', 'Branco']
+      'responses': [
+        {'text': 'Preto', 'grade': 10},
+        {'text': 'Vermelho', 'grade': 5},
+        {'text': 'Verde', 'grade': 3},
+        {'text': 'Branco', 'grade': 1},
+      ]
     },
     {
       'text': "Qual é o seu animal favorito ?",
-      'responses': ['Coelho', 'Cobra', 'Elefante', 'Leão']
+      'responses': [
+        {'text': 'Coelho', 'grade': 10},
+        {'text': 'Cobra', 'grade': 5},
+        {'text': 'Elefante', 'grade': 3},
+        {'text': 'Leão', 'grade': 1},
+      ]
     },
     {
       'text': "Qual seu instrutor favorito ?",
-      'responses': ['Maria', 'João', 'Leo', 'Pedro']
+      'responses': [
+        {'text': 'Leo', 'grade': 10},
+        {'text': 'Maria', 'grade': 5},
+        {'text': 'João', 'grade': 3},
+        {'text': 'Pedro', 'grade': 1},
+      ]
     }
   ];
 
@@ -34,12 +50,13 @@ class _QuestionAppState extends State<QuestionApp> {
     return _questionSelected < _questions.length;
   }
 
-  void onAnswer() {
+  void onAnswer(int score) {
     if (!hasQuestionSelected) {
       return;
     }
     setState(() {
       _questionSelected++;
+      _totalScore += score;
     });
   }
 
@@ -56,7 +73,7 @@ class _QuestionAppState extends State<QuestionApp> {
                 questions: _questions,
                 onAnswer: onAnswer,
               )
-            : const Result(),
+            : Result(_totalScore),
       ),
     );
   }
