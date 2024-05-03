@@ -1,4 +1,8 @@
-# clean_flutter_app
+# Quiz App
+
+`flutter run`
+`flutter clean`
+`flutter pub get` 
 
 A new Flutter project.
 

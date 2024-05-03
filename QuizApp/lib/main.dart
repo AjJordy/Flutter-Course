@@ -60,12 +60,21 @@ class _QuestionAppState extends State<QuestionApp> {
     });
   }
 
+  void restartQuiz() {
+    setState(() {
+      _questionSelected = 0;
+      _totalScore = 0;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
           title: const Text('Perguntas'),
+          backgroundColor: Colors.blue,
+          foregroundColor: Colors.white,
         ),
         body: hasQuestionSelected
             ? Quiz(
@@ -73,7 +82,7 @@ class _QuestionAppState extends State<QuestionApp> {
                 questions: _questions,
                 onAnswer: onAnswer,
               )
-            : Result(_totalScore),
+            : Result(_totalScore, restartQuiz),
       ),
     );
   }
