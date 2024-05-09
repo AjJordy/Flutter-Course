@@ -1,12 +1,22 @@
 import 'package:flutter/material.dart';
 
 class TransactionForm extends StatelessWidget {
-
   final titleController = TextEditingController();
   final valueController = TextEditingController();
   final void Function(String, double) onSubmit;
 
-  TransactionForm(this.onSubmit ,{super.key});
+  TransactionForm(this.onSubmit, {super.key});
+
+  void _submitForm() {
+    final title = titleController.text;
+    final value = double.tryParse(valueController.text) ?? 0.0;
+    print('title: $title');
+    print('value: $value');
+    if (title.isEmpty || value <= 0) {
+      return;
+    }
+    onSubmit(title, value);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,31 +28,22 @@ class TransactionForm extends StatelessWidget {
           children: [
             TextField(
               controller: titleController,
-              decoration: const InputDecoration(
-                labelText: 'Título',
-              ),
+              onSubmitted: (_) => _submitForm(),
+              decoration: const InputDecoration(labelText: 'Título'),
             ),
             TextField(
               controller: valueController,
-              decoration: const InputDecoration(
-                labelText: 'Valor (R\$)',
-              ),
+              keyboardType: TextInputType.numberWithOptions(decimal: true),
+              onSubmitted: (_) => _submitForm(),
+              decoration: const InputDecoration(labelText: 'Valor (R\$)'),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 TextButton(
-                  onPressed: (){
-                    final title = titleController.text;
-                    final value = double.tryParse(valueController.text) ?? 0;
-                    onSubmit(title, value);
-                    print('title: $title');
-                    print('value: $value');
-                  }, 
+                  onPressed: _submitForm,
                   style: TextButton.styleFrom(
-                    textStyle: const TextStyle(
-                      color: Colors.purple,
-                    ),
+                    textStyle: const TextStyle(color: Colors.purple),
                   ),
                   child: const Text('Nova transação'),
                 ),
