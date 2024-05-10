@@ -17,13 +17,6 @@ class ExpansesApp extends StatelessWidget {
       home: MyHomePage(),
       theme: ThemeData(
         colorSchemeSeed: Colors.purple[800],
-        // primarySwatch: Colors.purple,
-        // colorScheme: ColorScheme.fromSwatch().copyWith(
-        //   primary: Colors.purple,
-        //   secondary: Colors.amber,
-        //   tertiary: Colors.green,
-        //   background: Colors.white,
-        // ),
         fontFamily: 'Quicksand',
         textTheme: ThemeData.light().textTheme.copyWith(
               titleLarge: const TextStyle(fontFamily: "OpenSans", fontSize: 20),
@@ -50,7 +43,7 @@ class ExpansesApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({super.key});
+  const MyHomePage({super.key});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -98,12 +91,12 @@ class _MyHomePageState extends State<MyHomePage> {
     }).toList();
   }
 
-  void _addTransaction(String title, double value) {
+  void _addTransaction(String title, double value, DateTime date) {
     final newTransaction = Transaction(
       id: Random().nextDouble().toString(),
       title: title,
       value: value,
-      date: DateTime.now().subtract(const Duration(days: 4)),
+      date: date,
     );
 
     setState(() {
@@ -111,6 +104,12 @@ class _MyHomePageState extends State<MyHomePage> {
     });
 
     Navigator.of(context).pop();
+  }
+
+  void _deleteTransaction(String id) {
+    setState(() {
+      _transactions.removeWhere((tr) => tr.id == id);
+    });
   }
 
   void _openTransactionFormModal(BuildContext context) {
@@ -144,7 +143,7 @@ class _MyHomePageState extends State<MyHomePage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Chart(_recentTransactions),
-            TransactionList(_transactions),
+            TransactionList(_transactions, _deleteTransaction),
           ],
         ),
       ),
