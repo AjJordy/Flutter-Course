@@ -1,3 +1,4 @@
+import 'package:expenses/utils/convert_values.dart';
 import 'package:flutter/material.dart';
 
 class ChartBar extends StatelessWidget {
@@ -19,7 +20,7 @@ class ChartBar extends StatelessWidget {
         Container(
           height: 20,
           child: FittedBox(
-            child: Text(value.toInt().toString()),
+            child: Text(convertValue(value)),
           ),
         ),
         const SizedBox(height: 5),
