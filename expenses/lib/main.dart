@@ -26,10 +26,10 @@ class ExpansesApp extends StatelessWidget {
         // ),
         fontFamily: 'Quicksand',
         textTheme: ThemeData.light().textTheme.copyWith(
-              titleLarge: const TextStyle(
-                fontFamily: "OpenSans",
-                fontSize: 20,
-                // fontWeight: FontWeight.bold,
+              titleLarge: const TextStyle(fontFamily: "OpenSans", fontSize: 20),
+              labelLarge: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
               ),
             ),
         appBarTheme: AppBarTheme(
