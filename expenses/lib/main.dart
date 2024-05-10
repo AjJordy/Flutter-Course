@@ -15,11 +15,34 @@ class ExpansesApp extends StatelessWidget {
     return MaterialApp(
       home: MyHomePage(),
       theme: ThemeData(
-        primarySwatch: Colors.purple,
+        colorSchemeSeed: Colors.purple,
+        // primarySwatch: Colors.purple,
         // colorScheme: ColorScheme.fromSwatch().copyWith(
         //   primary: Colors.purple,
         //   secondary: Colors.amber,
+        //   tertiary: Colors.green,
+        //   background: Colors.white,
         // ),
+        fontFamily: 'Quicksand',
+        textTheme: ThemeData.light().textTheme.copyWith(
+              titleLarge: const TextStyle(
+                fontFamily: "OpenSans",
+                fontSize: 20,
+                // fontWeight: FontWeight.bold,
+              ),
+            ),
+        appBarTheme: AppBarTheme(
+          titleTextStyle: ThemeData.light()
+              .textTheme
+              .copyWith(
+                titleLarge: const TextStyle(
+                  fontFamily: "OpenSans",
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              )
+              .titleLarge,
+        ),
       ),
     );
   }
@@ -33,19 +56,19 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final _transactions = [
-    Transaction(
-      id: 't1',
-      title: 'Tênis de corrida',
-      value: 310.76,
-      date: DateTime.now(),
-    ),
-    Transaction(
-      id: 't2',
-      title: 'Conta de luz',
-      value: 211.30,
-      date: DateTime.now(),
-    ),
+  final List<Transaction> _transactions = [
+    // Transaction(
+    //   id: 't1',
+    //   title: 'Tênis de corrida',
+    //   value: 310.76,
+    //   date: DateTime.now(),
+    // ),
+    // Transaction(
+    //   id: 't2',
+    //   title: 'Conta de luz',
+    //   value: 211.30,
+    //   date: DateTime.now(),
+    // ),
   ];
 
   void _addTransaction(String title, double value) {
@@ -76,11 +99,12 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Despesas Pessoais'),
-        // backgroundColor: Colors.blue,
+        title: const Text(
+          'Despesas Pessoais',
+          style: TextStyle(fontFamily: 'OpenSans'),
+        ),
         backgroundColor: Theme.of(context).primaryColor,
         foregroundColor: Colors.white,
-
         actions: [
           IconButton(
             onPressed: () => _openTransactionFormModal(context),
@@ -94,10 +118,9 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             Container(
               child: Card(
-                // color: Colors.blue,
                 color: Theme.of(context).primaryColor,
                 elevation: 5,
-                child: Text('Gráfico'),
+                child: const Text('Gráfico'),
               ),
             ),
             TransactionList(_transactions),
