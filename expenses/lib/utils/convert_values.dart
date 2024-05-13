@@ -4,3 +4,10 @@ String convertValue(double value) {
   }
   return "R\$${value.toInt()}";
 }
+
+String convertValueSmall(double value) {
+  if (value > 1000) {
+    return "${value ~/ 1000}K";
+  }
+  return "${value.toInt()}";
+}
