@@ -10,13 +10,6 @@ class TransactionList extends StatelessWidget {
   final Function(String) onRemove;
   const TransactionList(this.transactions, this.onRemove, {super.key});
 
-  // String _convertValue(double value) {
-  //   if (value > 1000) {
-  //     return "R\$${value ~/ 1000}K";
-  //   }
-  //   return "R\$${value.toInt()}";
-  // }
-
   @override
   Widget build(BuildContext context) {
     return transactions.isEmpty
@@ -80,11 +73,21 @@ class TransactionList extends StatelessWidget {
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                   subtitle: Text(DateFormat('d MMM y').format(tr.date)),
-                  trailing: IconButton(
-                    onPressed: () => onRemove(tr.id),
-                    icon: const Icon(Icons.delete),
-                    color: Theme.of(context).colorScheme.error,
-                  ),
+                  trailing: MediaQuery.of(context).size.width > 480
+                      ? ElevatedButton.icon(
+                          onPressed: () => onRemove(tr.id),
+                          icon: const Icon(Icons.delete),
+                          label: const Text('Excluir'),
+                          style: ElevatedButton.styleFrom(
+                            foregroundColor:
+                                Theme.of(context).colorScheme.error,
+                          ),
+                        )
+                      : IconButton(
+                          onPressed: () => onRemove(tr.id),
+                          icon: const Icon(Icons.delete),
+                          color: Theme.of(context).colorScheme.error,
+                        ),
                 ),
               );
             },

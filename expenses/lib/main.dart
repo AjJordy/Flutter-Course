@@ -1,8 +1,10 @@
+import 'dart:math';
+import 'dart:io';
+
 import 'package:expenses/components/chart.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter/services.dart';
 
-import 'dart:math';
 import 'components/transaction_form.dart';
 import 'components/transaction_list.dart';
 import 'models/transactions.dart';
@@ -131,8 +133,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    bool isLandscape =
-        MediaQuery.of(context).orientation == Orientation.landscape;
+    final mediaQuery = MediaQuery.of(context);
+    bool isLandscape = mediaQuery.orientation == Orientation.landscape;
 
     final appBar = AppBar(
       title: const Text('Despesas Pessoais'),
@@ -154,9 +156,9 @@ class _MyHomePageState extends State<MyHomePage> {
       ],
     );
 
-    final availabelHeight = MediaQuery.of(context).size.height -
+    final availabelHeight = mediaQuery.size.height -
         appBar.preferredSize.height -
-        MediaQuery.of(context).padding.top;
+        mediaQuery.padding.top;
 
     return Scaffold(
       appBar: appBar,
@@ -169,7 +171,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text('Exibir gráfico'),
-                  Switch(
+                  Switch.adaptive(
                     value: _showChart,
                     onChanged: (value) {
                       setState(() {
@@ -186,16 +188,18 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             if (!_showChart || !isLandscape)
               Container(
-                height: availabelHeight * 0.7,
+                height: availabelHeight * (isLandscape ? 1 : 0.7),
                 child: TransactionList(_transactions, _deleteTransaction),
               ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _openTransactionFormModal(context),
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton: Platform.isIOS
+          ? Container()
+          : FloatingActionButton(
+              onPressed: () => _openTransactionFormModal(context),
+              child: const Icon(Icons.add),
+            ),
     );
   }
 }
