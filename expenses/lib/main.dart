@@ -1,5 +1,6 @@
 import 'package:expenses/components/chart.dart';
 import 'package:flutter/material.dart';
+// import 'package:flutter/services.dart';
 
 import 'dart:math';
 import 'components/transaction_form.dart';
@@ -13,6 +14,10 @@ class ExpansesApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // SystemChrome.setPreferredOrientations([
+    //   DeviceOrientation.portraitUp,
+    // ]);
+
     return MaterialApp(
       home: MyHomePage(),
       theme: ThemeData(
@@ -51,6 +56,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  bool _showChart = false;
+
   final List<Transaction> _transactions = [
     Transaction(
       id: 't0',
@@ -146,14 +153,30 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Container(
-              height: availabelHeight * 0.3,
-              child: Chart(_recentTransactions),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text('Exibir gráfico'),
+                Switch(
+                  value: _showChart,
+                  onChanged: (value) {
+                    setState(() {
+                      _showChart = value;
+                    });
+                  },
+                ),
+              ],
             ),
-            Container(
-              height: availabelHeight * 0.7,
-              child: TransactionList(_transactions, _deleteTransaction),
-            ),
+            if (_showChart)
+              Container(
+                height: availabelHeight * 0.3,
+                child: Chart(_recentTransactions),
+              )
+            else
+              Container(
+                height: availabelHeight * 0.7,
+                child: TransactionList(_transactions, _deleteTransaction),
+              ),
           ],
         ),
       ),
