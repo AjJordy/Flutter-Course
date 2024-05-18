@@ -211,12 +211,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 ],
               ),
             if (_showChart || !isLandscape)
-              Container(
+              SizedBox(
                 height: availabelHeight * (isLandscape ? 0.7 : 0.3),
                 child: Chart(_recentTransactions),
               ),
             if (!_showChart || !isLandscape)
-              Container(
+              SizedBox(
                 height: availabelHeight * (isLandscape ? 1 : 0.7),
                 child: TransactionList(_transactions, _deleteTransaction),
               ),
