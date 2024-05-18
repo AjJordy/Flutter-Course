@@ -2,8 +2,8 @@ import 'dart:math';
 import 'dart:io';
 
 import 'package:expenses/components/chart.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter/services.dart';
 
 import 'components/transaction_form.dart';
 import 'components/transaction_list.dart';
@@ -23,13 +23,14 @@ class ExpansesApp extends StatelessWidget {
     return MaterialApp(
       home: MyHomePage(),
       theme: ThemeData(
-        colorSchemeSeed: Colors.purple[800],
+        colorSchemeSeed: Colors.purple[900],
         fontFamily: 'Quicksand',
         textTheme: ThemeData.light().textTheme.copyWith(
               titleLarge: const TextStyle(fontFamily: "OpenSans", fontSize: 20),
               labelLarge: const TextStyle(
                 color: Colors.white,
-                fontWeight: FontWeight.bold,
+                fontSize: 18,
+                // fontWeight: FontWeight.bold,
               ),
             ),
         appBarTheme: AppBarTheme(
@@ -38,7 +39,6 @@ class ExpansesApp extends StatelessWidget {
               .copyWith(
                 titleLarge: TextStyle(
                   fontFamily: "OpenSans",
-                  // fontSize: 20,
                   fontSize: 20 * MediaQuery.textScalerOf(context).scale(1),
                   fontWeight: FontWeight.bold,
                 ),
@@ -131,38 +131,67 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  Widget _getIconButton(IconData icon, Function()? fn) {
+    if (Platform.isIOS) {
+      return GestureDetector(
+        onTap: fn,
+        child: Icon(icon),
+      );
+    } else {
+      return IconButton(
+        onPressed: fn,
+        icon: Icon(icon),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
     bool isLandscape = mediaQuery.orientation == Orientation.landscape;
 
-    final appBar = AppBar(
-      title: const Text('Despesas Pessoais'),
-      backgroundColor: Theme.of(context).primaryColor,
-      foregroundColor: Colors.white,
-      actions: [
-        IconButton(
-          onPressed: () {
+    final iconList = Platform.isIOS ? CupertinoIcons.refresh : Icons.list;
+    final charList = Platform.isIOS ? CupertinoIcons.refresh : Icons.show_chart;
+
+    final actions = [
+      if (isLandscape)
+        _getIconButton(
+          _showChart ? iconList : charList,
+          () {
             setState(() {
               _showChart = !_showChart;
             });
           },
-          icon: Icon(_showChart ? Icons.list : Icons.show_chart),
         ),
-        IconButton(
-          onPressed: () => _openTransactionFormModal(context),
-          icon: const Icon(Icons.add),
-        ),
-      ],
+      _getIconButton(
+        Platform.isIOS ? CupertinoIcons.add : Icons.add,
+        () => _openTransactionFormModal(context),
+      ),
+    ];
+
+    final appBarIOS = CupertinoNavigationBar(
+      middle: const Text('Despesas Pessoais'),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: actions,
+      ),
+    );
+
+    final appBarAndroid = AppBar(
+      title: const Text('Despesas Pessoais'),
+      backgroundColor: Theme.of(context).primaryColor,
+      foregroundColor: Colors.white,
+      actions: actions,
     );
 
     final availabelHeight = mediaQuery.size.height -
-        appBar.preferredSize.height -
+        (Platform.isIOS
+            ? appBarIOS.preferredSize.height
+            : appBarAndroid.preferredSize.height) -
         mediaQuery.padding.top;
 
-    return Scaffold(
-      appBar: appBar,
-      body: SingleChildScrollView(
+    final bodyPage = SafeArea(
+      child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -194,12 +223,24 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      floatingActionButton: Platform.isIOS
-          ? Container()
-          : FloatingActionButton(
-              onPressed: () => _openTransactionFormModal(context),
-              child: const Icon(Icons.add),
-            ),
     );
+
+    if (Platform.isIOS) {
+      return CupertinoPageScaffold(
+        navigationBar: appBarIOS,
+        child: bodyPage,
+      );
+    } else {
+      return Scaffold(
+        appBar: appBarAndroid,
+        body: bodyPage,
+        floatingActionButton: Platform.isIOS
+            ? Container()
+            : FloatingActionButton(
+                onPressed: () => _openTransactionFormModal(context),
+                child: const Icon(Icons.add),
+              ),
+      );
+    }
   }
 }
