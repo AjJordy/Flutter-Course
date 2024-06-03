@@ -1,15 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:meals/data/dummy_data.dart';
+import 'package:meals/models/meal.dart';
 import 'package:meals/screens/categories_meals_screen.dart';
-import 'package:meals/screens/categories_screen.dart';
 import 'package:meals/screens/meal_detail_screen.dart';
+import 'package:meals/screens/settings_screen.dart';
 import 'package:meals/screens/tabs_screen.dart';
 import 'package:meals/utils/app_routes.dart';
 
 void main() => runApp(MyApp());
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   final ThemeData theme = ThemeData();
+
+  List<Meal> _availableMeals = DUMMY_MEALS;
 
   @override
   Widget build(BuildContext context) {
@@ -34,8 +44,11 @@ class MyApp extends StatelessWidget {
       // home: const CategoriesScreen(),
       routes: {
         AppRoutes.HOME: (ctx) => const TabsScreen(),
-        AppRoutes.CATEGORIES_MEALS: (ctx) => const CategoriesMealsScreen(),
+        AppRoutes.CATEGORIES_MEALS: (ctx) => CategoriesMealsScreen(
+              meals: _availableMeals,
+            ),
         AppRoutes.MEAL_DETAIL: (ctx) => const MealDetailScreen(),
+        AppRoutes.SETTINGS: (ctx) => const SettingsScreen(),
       },
       // onGenerateRoute: (settings) {
       //   if (settings.name == '/alguma-coisa') {
