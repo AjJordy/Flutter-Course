@@ -3,17 +3,16 @@ import 'package:meals/models/meal.dart';
 import 'package:meals/utils/app_routes.dart';
 
 class MealItem extends StatelessWidget {
-  const MealItem({
-    super.key,
-    required this.meal,
-  });
+  const MealItem(this.meal, {super.key});
 
   final Meal meal;
   void _selectMeal(BuildContext context) {
-    Navigator.of(context).pushNamed(
+    Navigator.of(context)
+        .pushNamed(
       AppRoutes.MEAL_DETAIL,
       arguments: meal,
-    ).then((result) {
+    )
+        .then((result) {
       if (result == null) {
         print('Sem resultado');
       } else {

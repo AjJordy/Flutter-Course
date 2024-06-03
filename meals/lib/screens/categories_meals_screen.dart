@@ -5,10 +5,7 @@ import 'package:meals/models/meal.dart';
 
 class CategoriesMealsScreen extends StatelessWidget {
   final List<Meal> meals;
-  const CategoriesMealsScreen({
-    super.key,
-    required this.meals,
-  });
+  const CategoriesMealsScreen(this.meals, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +23,7 @@ class CategoriesMealsScreen extends StatelessWidget {
         child: ListView.builder(
           itemCount: categoryMeals.length,
           itemBuilder: (ctx, index) {
-            return MealItem(meal: categoryMeals[index]);
+            return MealItem(categoryMeals[index]);
           },
         ),
       ),
