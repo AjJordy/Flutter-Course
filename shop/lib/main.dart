@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/providers/cart.dart';
-import 'package:shop/providers/counter_provider.dart';
 import 'package:shop/providers/products.dart';
 import 'package:shop/utils/app_routes.dart';
 import 'package:shop/views/product_detail_screen.dart';
 import 'package:shop/views/product_overview_screen.dart';
+// import 'package:shop/providers/counter_provider.dart';
 
 void main() => runApp(const MyApp());
 
