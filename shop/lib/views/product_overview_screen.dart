@@ -49,9 +49,12 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
               ),
             ],
           ),
-          IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.shopping_cart),
+          Badge(
+            label: Text("2"),
+            child: IconButton(
+              onPressed: () {},
+              icon: Icon(Icons.shopping_cart),
+            ),
           ),
         ],
       ),
