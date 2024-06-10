@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/providers/cart.dart';
+import 'package:shop/utils/app_routes.dart';
 import 'package:shop/widgets/badge.dart';
 import 'package:shop/widgets/product_grid.dart';
 
@@ -26,6 +27,18 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Colors.white,
         actions: [
+          Consumer<Cart>(
+            child: IconButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed(AppRoutes.CART);
+              },
+              icon: Icon(Icons.shopping_cart),
+            ),
+            builder: (ctx, cart, child) => MyBadge(
+              value: cart.itemsCount.toString(),
+              child: child!,
+            ),
+          ),
           PopupMenuButton(
             onSelected: (FilterOptions selectedValue) {
               setState(() {
@@ -49,16 +62,6 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
                 value: FilterOptions.All,
               ),
             ],
-          ),
-          Consumer<Cart>(
-            child: IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.shopping_cart),
-            ),
-            builder: (ctx, cart, child) => MyBadge(
-              value: cart.itemCount.toString(),
-              child: child!,
-            ),
           ),
         ],
       ),
