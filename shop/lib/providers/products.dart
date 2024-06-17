@@ -1,6 +1,9 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:shop/config.dart';
 import 'package:shop/data/dummy_data.dart';
 import 'package:shop/providers/product.dart';
 
@@ -36,15 +39,29 @@ class Products with ChangeNotifier {
   //   notifyListeners();
   // }
 
-  void addProduct(Product newProduct) {
-    _items.add(Product(
-      id: Random().nextDouble().toString(),
-      title: newProduct.title,
-      description: newProduct.description,
-      price: newProduct.price,
-      imageUrl: newProduct.imageUrl,
-    ));
-    notifyListeners();
+  Future<void> addProduct(Product newProduct) {
+    Uri url = Uri.parse('$baseUrl/products.json');
+    return http.post(
+      url,
+      body: json.encode({
+        'title': newProduct.title,
+        'description': newProduct.description,
+        'price': newProduct.price,
+        'imageUrl': newProduct.imageUrl,
+        'isFavorite': newProduct.isFavorite,
+      }),
+    )
+    .then((response) {
+      String id = json.decode(response.body)['name'];
+      _items.add(Product(
+        id: id, //Random().nextDouble().toString(),
+        title: newProduct.title,
+        description: newProduct.description,
+        price: newProduct.price,
+        imageUrl: newProduct.imageUrl,
+      ));
+      notifyListeners();
+    });
   }
 
   void updateProduct(Product product) {
