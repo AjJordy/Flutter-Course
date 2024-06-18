@@ -1,14 +1,14 @@
 import 'dart:convert';
-import 'dart:math';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shop/config.dart';
-import 'package:shop/data/dummy_data.dart';
 import 'package:shop/providers/product.dart';
+// import 'package:shop/data/dummy_data.dart';
 
 class Products with ChangeNotifier {
-  List<Product> _items = DUMMY_PRODUCTS;
+  List<Product> _items = []; //DUMMY_PRODUCTS;
 
   List<Product> get items => [..._items];
 
@@ -20,8 +20,94 @@ class Products with ChangeNotifier {
     return _items.length;
   }
 
-  // bool _showFavoriteOnly = false;
+  Future<void> loadProducts() async {
+    _items.clear();
+    final Uri _url = Uri.parse("$baseUrl.json");
+    final response = await http.get(_url);
+    // print(json.decode(response.body));
+    Map<String, dynamic>? data = json.decode(response.body);
+    if (data == null) return Future.value();
 
+    data.forEach((productId, productData) {
+      _items.add(Product(
+        id: productId,
+        title: productData['title'],
+        description: productData['description'],
+        price: productData['price'],
+        imageUrl: productData['imageUrl'],
+        isFavorite: productData['isFavorite'],
+      ));
+    });
+    notifyListeners();
+    return Future.value();
+  }
+
+  Future<void> addProduct(Product newProduct) async {
+    final Uri _url = Uri.parse("$baseUrl.json");
+    final response = await http.post(
+      _url,
+      body: json.encode({
+        'title': newProduct.title,
+        'description': newProduct.description,
+        'price': newProduct.price,
+        'imageUrl': newProduct.imageUrl,
+        'isFavorite': newProduct.isFavorite,
+      }),
+    );
+
+    String id = json.decode(response.body)['name'];
+    _items.add(Product(
+      id: id, //Random().nextDouble().toString(),
+      title: newProduct.title,
+      description: newProduct.description,
+      price: newProduct.price,
+      imageUrl: newProduct.imageUrl,
+    ));
+    notifyListeners();
+  }
+
+  Future<void> updateProduct(Product product) async {
+    if (product.id == null) {
+      return;
+    }
+
+    final index = _items.indexWhere((prod) => prod.id == product.id);
+    if (index >= 0) {
+      final Uri _url = Uri.parse("$baseUrl/${product.id}.json");
+      await http.patch(
+        _url,
+        body: json.encode({
+          'title': product.title,
+          'description': product.description,
+          'price': product.price,
+          'imageUrl': product.imageUrl,
+        }),
+      );
+      _items[index] = product;
+      notifyListeners();
+    }
+  }
+
+  Future<void> deleteProduct(String id) async {
+    final index = _items.indexWhere((prod) => prod.id == id);
+    if (index >= 0) {
+      final product = _items[index];
+      // _items.removeWhere((prod) => prod.id == id);
+      _items.remove(product);
+      notifyListeners();
+
+      final Uri _url = Uri.parse("$baseUrl/${product.id}.json");
+      final response = await http.delete(_url);
+      if (response.statusCode >= 400) {
+        print("Erro ao excluir o produto");
+        _items.insert(index, product);
+        notifyListeners();
+        throw HttpException('Ocorreu um erro na exclusão do produto');
+      }
+    }
+  }
+
+  // bool _showFavoriteOnly = false;
   // List<Product> get items {
   //   if (_showFavoriteOnly) {
   //     return _items.where((prod) => prod.isFavorite).toList();
@@ -67,48 +153,4 @@ class Products with ChangeNotifier {
   //   //   throw error;
   //   // });
   // }
-
-  Future<void> addProduct(Product newProduct) async {
-    Uri url = Uri.parse('$baseUrl/products.json');
-    final response = await http.post(
-      url,
-      body: json.encode({
-        'title': newProduct.title,
-        'description': newProduct.description,
-        'price': newProduct.price,
-        'imageUrl': newProduct.imageUrl,
-        'isFavorite': newProduct.isFavorite,
-      }),
-    );
-
-    String id = json.decode(response.body)['name'];
-    _items.add(Product(
-      id: id, //Random().nextDouble().toString(),
-      title: newProduct.title,
-      description: newProduct.description,
-      price: newProduct.price,
-      imageUrl: newProduct.imageUrl,
-    ));
-    notifyListeners();
-  }
-
-  void updateProduct(Product product) {
-    if (product.id == null) {
-      return;
-    }
-
-    final index = _items.indexWhere((prod) => prod.id == product.id);
-    if (index >= 0) {
-      _items[index] = product;
-      notifyListeners();
-    }
-  }
-
-  void deleteProduct(String id) {
-    final index = _items.indexWhere((prod) => prod.id == id);
-    if (index >= 0) {
-      _items.removeWhere((prod) => prod.id == id);
-      notifyListeners();
-    }
-  }
 }

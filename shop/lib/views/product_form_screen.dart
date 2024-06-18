@@ -92,56 +92,61 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
     });
 
     final products = Provider.of<Products>(context, listen: false);
-    if (_formData['id'] == null) {
-      // products.addProduct(product).catchError(
-      //   (error) {
-      //     return showDialog<Null>(
-      //       context: context,
-      //       builder: (ctx) => AlertDialog(
-      //         title: Text("Ocorreu um erro"),
-      //         //error.toString()
-      //         content: Text("Ocorreu um erro ao salvar o produto"),
-      //         actions: [
-      //           ElevatedButton(
-      //             onPressed: () => Navigator.of(context).pop(),
-      //             child: Text('Ok'),
-      //           ),
-      //         ],
-      //       ),
-      //     );
-      //   },
-      // ).then((_) {
-      //   setState(() {
-      //     _isLoading = false;
-      //   });
-      //   Navigator.of(context).pop();
-      // });
+    // if (_formData['id'] == null) {
+    // products.addProduct(product).catchError(
+    //   (error) {
+    //     return showDialog<Null>(
+    //       context: context,
+    //       builder: (ctx) => AlertDialog(
+    //         title: Text("Ocorreu um erro"),
+    //         //error.toString()
+    //         content: Text("Ocorreu um erro ao salvar o produto"),
+    //         actions: [
+    //           ElevatedButton(
+    //             onPressed: () => Navigator.of(context).pop(),
+    //             child: Text('Ok'),
+    //           ),
+    //         ],
+    //       ),
+    //     );
+    //   },
+    // ).then((_) {
+    //   setState(() {
+    //     _isLoading = false;
+    //   });
+    //   Navigator.of(context).pop();
+    // });
+    // }
+    // else {
+    //   products.updateProduct(product);
+    // }
 
-      try {
+    try {
+      if (_formData['id'] == null) {
         await products.addProduct(product);
-        Navigator.of(context).pop();
-      } catch (error) {
-        await showDialog<Null>(
-          context: context,
-          builder: (ctx) => AlertDialog(
-            title: Text("Ocorreu um erro"),
-            //error.toString()
-            content: Text("Ocorreu um erro ao salvar o produto"),
-            actions: [
-              ElevatedButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text('Fechar'),
-              ),
-            ],
-          ),
-        );
-      } finally {
-        setState(() {
-          _isLoading = false;
-        });
+      } else {
+        await products.updateProduct(product);
       }
-    } else {
-      products.updateProduct(product);
+      Navigator.of(context).pop();
+    } catch (error) {
+      await showDialog<Null>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text("Ocorreu um erro"),
+          //error.toString()
+          content: Text("Ocorreu um erro ao salvar o produto"),
+          actions: [
+            ElevatedButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('Fechar'),
+            ),
+          ],
+        ),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
