@@ -72,7 +72,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
     super.dispose();
   }
 
-  void _saveForm() {
+  Future<void> _saveForm() async {
     bool isValid = _form.currentState?.validate() ?? false;
     if (!isValid) {
       return;
@@ -93,12 +93,53 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
 
     final products = Provider.of<Products>(context, listen: false);
     if (_formData['id'] == null) {
-      products.addProduct(product).then((_) {
+      // products.addProduct(product).catchError(
+      //   (error) {
+      //     return showDialog<Null>(
+      //       context: context,
+      //       builder: (ctx) => AlertDialog(
+      //         title: Text("Ocorreu um erro"),
+      //         //error.toString()
+      //         content: Text("Ocorreu um erro ao salvar o produto"),
+      //         actions: [
+      //           ElevatedButton(
+      //             onPressed: () => Navigator.of(context).pop(),
+      //             child: Text('Ok'),
+      //           ),
+      //         ],
+      //       ),
+      //     );
+      //   },
+      // ).then((_) {
+      //   setState(() {
+      //     _isLoading = false;
+      //   });
+      //   Navigator.of(context).pop();
+      // });
+
+      try {
+        await products.addProduct(product);
+        Navigator.of(context).pop();
+      } catch (error) {
+        await showDialog<Null>(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: Text("Ocorreu um erro"),
+            //error.toString()
+            content: Text("Ocorreu um erro ao salvar o produto"),
+            actions: [
+              ElevatedButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text('Fechar'),
+              ),
+            ],
+          ),
+        );
+      } finally {
         setState(() {
           _isLoading = false;
         });
-        Navigator.of(context).pop();
-      });
+      }
     } else {
       products.updateProduct(product);
     }

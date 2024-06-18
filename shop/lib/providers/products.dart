@@ -39,9 +39,38 @@ class Products with ChangeNotifier {
   //   notifyListeners();
   // }
 
-  Future<void> addProduct(Product newProduct) {
+  // Future<void> addProduct(Product newProduct) {
+  //   Uri url = Uri.parse('$baseUrl/products.json');
+  //   return http.post(
+  //     url,
+  //     body: json.encode({
+  //       'title': newProduct.title,
+  //       'description': newProduct.description,
+  //       'price': newProduct.price,
+  //       'imageUrl': newProduct.imageUrl,
+  //       'isFavorite': newProduct.isFavorite,
+  //     }),
+  //   )
+  //   .then((response) {
+  //     String id = json.decode(response.body)['name'];
+  //     _items.add(Product(
+  //       id: id, //Random().nextDouble().toString(),
+  //       title: newProduct.title,
+  //       description: newProduct.description,
+  //       price: newProduct.price,
+  //       imageUrl: newProduct.imageUrl,
+  //     ));
+  //     notifyListeners();
+  //   });
+  //   // .catchError((error) {
+  //   //   print(error);
+  //   //   throw error;
+  //   // });
+  // }
+
+  Future<void> addProduct(Product newProduct) async {
     Uri url = Uri.parse('$baseUrl/products.json');
-    return http.post(
+    final response = await http.post(
       url,
       body: json.encode({
         'title': newProduct.title,
@@ -50,18 +79,17 @@ class Products with ChangeNotifier {
         'imageUrl': newProduct.imageUrl,
         'isFavorite': newProduct.isFavorite,
       }),
-    )
-    .then((response) {
-      String id = json.decode(response.body)['name'];
-      _items.add(Product(
-        id: id, //Random().nextDouble().toString(),
-        title: newProduct.title,
-        description: newProduct.description,
-        price: newProduct.price,
-        imageUrl: newProduct.imageUrl,
-      ));
-      notifyListeners();
-    });
+    );
+
+    String id = json.decode(response.body)['name'];
+    _items.add(Product(
+      id: id, //Random().nextDouble().toString(),
+      title: newProduct.title,
+      description: newProduct.description,
+      price: newProduct.price,
+      imageUrl: newProduct.imageUrl,
+    ));
+    notifyListeners();
   }
 
   void updateProduct(Product product) {
