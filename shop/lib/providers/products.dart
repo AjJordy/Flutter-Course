@@ -22,7 +22,7 @@ class Products with ChangeNotifier {
 
   Future<void> loadProducts() async {
     _items.clear();
-    final Uri _url = Uri.parse("$baseUrl.json");
+    final Uri _url = Uri.parse("$productsUrl.json");
     final response = await http.get(_url);
     // print(json.decode(response.body));
     Map<String, dynamic>? data = json.decode(response.body);
@@ -43,7 +43,7 @@ class Products with ChangeNotifier {
   }
 
   Future<void> addProduct(Product newProduct) async {
-    final Uri _url = Uri.parse("$baseUrl.json");
+    final Uri _url = Uri.parse("$productsUrl.json");
     final response = await http.post(
       _url,
       body: json.encode({
@@ -73,7 +73,7 @@ class Products with ChangeNotifier {
 
     final index = _items.indexWhere((prod) => prod.id == product.id);
     if (index >= 0) {
-      final Uri _url = Uri.parse("$baseUrl/${product.id}.json");
+      final Uri _url = Uri.parse("$productsUrl/${product.id}.json");
       await http.patch(
         _url,
         body: json.encode({
@@ -96,7 +96,7 @@ class Products with ChangeNotifier {
       _items.remove(product);
       notifyListeners();
 
-      final Uri _url = Uri.parse("$baseUrl/${product.id}.json");
+      final Uri _url = Uri.parse("$productsUrl/${product.id}.json");
       final response = await http.delete(_url);
       if (response.statusCode >= 400) {
         print("Erro ao excluir o produto");
