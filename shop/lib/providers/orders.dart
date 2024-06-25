@@ -1,8 +1,6 @@
 import 'dart:convert';
-import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:shop/config.dart';
 import 'package:shop/providers/cart.dart';
 import 'package:shop/utils/constants.dart';
 

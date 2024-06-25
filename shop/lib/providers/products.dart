@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:shop/config.dart';
 import 'package:shop/providers/product.dart';
 import 'package:shop/utils/constants.dart';
 // import 'package:shop/data/dummy_data.dart';
