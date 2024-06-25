@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:shop/config.dart';
 import 'package:shop/providers/cart.dart';
+import 'package:shop/utils/constants.dart';
 
 class Order {
   final String id;
@@ -32,7 +33,7 @@ class Orders with ChangeNotifier {
 
   Future<void> loadOrders() async {
     List<Order> loadedItems = [];
-    final Uri _url = Uri.parse("$ordersUrl.json");
+    final Uri _url = Uri.parse("${Constants.BASE_API_URL}/orders.json");
     final response = await http.get(_url);
     // print(json.decode(response.body));
     Map<String, dynamic>? data = json.decode(response.body);
@@ -70,7 +71,7 @@ class Orders with ChangeNotifier {
 
     final date = DateTime.now();
     try {
-      final Uri _url = Uri.parse("$ordersUrl.json");
+      final Uri _url = Uri.parse("${Constants.BASE_API_URL}/orders.json");
       final response = await http.post(
         _url,
         body: json.encode({
