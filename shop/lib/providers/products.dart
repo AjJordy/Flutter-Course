@@ -9,6 +9,10 @@ import 'package:shop/utils/constants.dart';
 
 class Products with ChangeNotifier {
   List<Product> _items = []; //DUMMY_PRODUCTS;
+  String? _token;
+  Products(this._token, this._items);
+
+  final String _baseUrl = "${Constants.BASE_API_URL}/products";
 
   List<Product> get items => [..._items];
 
@@ -22,7 +26,7 @@ class Products with ChangeNotifier {
 
   Future<void> loadProducts() async {
     _items.clear();
-    final Uri _url = Uri.parse("${Constants.BASE_API_URL}/products.json");
+    final Uri _url = Uri.parse("$_baseUrl.json?auth=$_token");
     final response = await http.get(_url);
     // print(json.decode(response.body));
     Map<String, dynamic>? data = json.decode(response.body);
@@ -43,7 +47,7 @@ class Products with ChangeNotifier {
   }
 
   Future<void> addProduct(Product newProduct) async {
-    final Uri _url = Uri.parse("${Constants.BASE_API_URL}/products.json");
+    final Uri _url = Uri.parse("$_baseUrl.json?auth=$_token");
     final response = await http.post(
       _url,
       body: json.encode({
@@ -73,8 +77,7 @@ class Products with ChangeNotifier {
 
     final index = _items.indexWhere((prod) => prod.id == product.id);
     if (index >= 0) {
-      final Uri _url =
-          Uri.parse("${Constants.BASE_API_URL}/products/${product.id}.json");
+      final Uri _url = Uri.parse("$_baseUrl/${product.id}.json?auth=$_token");
       await http.patch(
         _url,
         body: json.encode({
@@ -97,8 +100,7 @@ class Products with ChangeNotifier {
       _items.remove(product);
       notifyListeners();
 
-      final Uri _url =
-          Uri.parse("${Constants.BASE_API_URL}/products/${product.id}.json");
+      final Uri _url = Uri.parse("$_baseUrl/${product.id}.json?auth=$_token");
       final response = await http.delete(_url);
       if (response.statusCode >= 400) {
         print("Erro ao excluir o produto");
