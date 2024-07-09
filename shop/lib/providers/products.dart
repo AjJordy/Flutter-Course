@@ -8,9 +8,10 @@ import 'package:shop/utils/constants.dart';
 // import 'package:shop/data/dummy_data.dart';
 
 class Products with ChangeNotifier {
-  List<Product> _items = []; //DUMMY_PRODUCTS;
+  List<Product> _items; //DUMMY_PRODUCTS;
   String? _token;
-  Products(this._token, this._items);
+  String? _userId;
+  Products([this._token, this._userId, this._items = const []]);
 
   final String _baseUrl = "${Constants.BASE_API_URL}/products";
 
@@ -26,20 +27,27 @@ class Products with ChangeNotifier {
 
   Future<void> loadProducts() async {
     _items.clear();
+
     final Uri _url = Uri.parse("$_baseUrl.json?auth=$_token");
     final response = await http.get(_url);
-    // print(json.decode(response.body));
     Map<String, dynamic>? data = json.decode(response.body);
     if (data == null) return Future.value();
 
+    final Uri _urlFav = Uri.parse(
+        "${Constants.BASE_API_URL}/userFavorites/$_userId.json?auth=$_token");
+    final favResponse = await http.get(_urlFav);
+    final favMap = json.decode(favResponse.body);
+
     data.forEach((productId, productData) {
+      final isFavorite = favMap == null ? false : favMap[productId] ?? false;
       _items.add(Product(
         id: productId,
         title: productData['title'],
         description: productData['description'],
         price: productData['price'],
         imageUrl: productData['imageUrl'],
-        isFavorite: productData['isFavorite'],
+        isFavorite: isFavorite,
+        // isFavorite: productData['isFavorite'],
       ));
     });
     notifyListeners();
@@ -55,7 +63,7 @@ class Products with ChangeNotifier {
         'description': newProduct.description,
         'price': newProduct.price,
         'imageUrl': newProduct.imageUrl,
-        'isFavorite': newProduct.isFavorite,
+        // 'isFavorite': newProduct.isFavorite,
       }),
     );
 
