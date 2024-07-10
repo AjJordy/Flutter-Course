@@ -39,9 +39,10 @@ class _OrderWidgetState extends State<OrderWidget> {
               ),
             ),
             // if (_expanded)
-            Container(
+            AnimatedContainer(
+              duration: Duration(milliseconds: 300),
+              height: _expanded ? itemsHeight : 0,
               padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 4),
-              height: itemsHeight,
               child: ListView(
                 children: widget.order.products.map((product) {
                   return Row(
