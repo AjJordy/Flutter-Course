@@ -11,6 +11,8 @@ class PlacesListScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Meus Lugares'),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        foregroundColor: Theme.of(context).colorScheme.surface,
         actions: [
           IconButton(
             onPressed: () {
@@ -20,26 +22,41 @@ class PlacesListScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: Consumer<GreatPlaces>(
-        builder: (context, greatPlaces, child) {
-          if (greatPlaces.itemsCount == 0) {
-            return child ?? Container();
-          } else {
-            return ListView.builder(
-              itemBuilder: (context, i) => ListTile(
-                leading: CircleAvatar(
-                  backgroundImage: FileImage(greatPlaces.itemByIndex(i).image),
-                ),
-                title: Text(greatPlaces.itemByIndex(i).title),
-                onTap: () {},
-              ),
-              itemCount: greatPlaces.itemsCount,
-            );
+      body: FutureBuilder(
+        future: Provider.of<GreatPlaces>(context, listen: false).loadPlaces(),
+        builder: (ctx, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
           }
+          return Consumer<GreatPlaces>(
+            builder: (context, greatPlaces, child) {
+              if (greatPlaces.itemsCount == 0) {
+                return child ?? Container();
+              } else {
+                return ListView.builder(
+                  itemBuilder: (context, i) => ListTile(
+                    leading: CircleAvatar(
+                      backgroundImage: FileImage(
+                        greatPlaces.itemByIndex(i).image,
+                      ),
+                    ),
+                    title: Text(
+                      greatPlaces.itemByIndex(i).title,
+                    ),
+                    subtitle: Text(
+                      greatPlaces.itemByIndex(i).location?.address ?? "",
+                    ),
+                    onTap: () {},
+                  ),
+                  itemCount: greatPlaces.itemsCount,
+                );
+              }
+            },
+            child: const Center(
+              child: Text('Nenhum local cadastrado'),
+            ),
+          );
         },
-        child: const Center(
-          child: Text('Nenhum local cadastrado'),
-        ),
       ),
     );
   }
