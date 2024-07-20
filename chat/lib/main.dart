@@ -1,8 +1,12 @@
 import 'package:chat/screens/auth_screen.dart';
 import 'package:chat/screens/chat_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'firebase_options.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
 }
 
@@ -17,7 +21,6 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.pink,
           backgroundColor: Colors.pink,
           accentColor: Colors.deepPurple,
-          brightness: Brightness.dark,
         ),
         buttonTheme: ButtonTheme.of(context).copyWith(
           buttonColor: Colors.pink,
