@@ -1,36 +1,50 @@
+import 'package:chat/widgets/messages.dart';
+import 'package:chat/widgets/new_message.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class ChatScreen extends StatelessWidget {
   const ChatScreen({super.key});
 
-  // final chatCollection = FirebaseFirestore.instance.collection('chat');
-  // chatCollection.snapshots().listen(
-  //   (querySnapshot) {
-  //     querySnapshot.docs.forEach((doc) {
-  //       print(doc["text"]);
-  //     });
-  //   },
-  // );
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection('chat').snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          final documents = snapshot.data?.docs;
-          return ListView.builder(
-            itemCount: documents?.length ?? 0,
-            itemBuilder: (ctx, i) => Container(
-              padding: const EdgeInsets.all(10),
-              child: Text(documents?[i]['text'] ?? ""),
+      appBar: AppBar(
+        title: const Text('Flutter chat'),
+        actions: [
+          DropdownButtonHideUnderline(
+            child: DropdownButton(
+              icon: Icon(
+                Icons.more_vert,
+                color: Theme.of(context).primaryIconTheme.color,
+              ),
+              items: const [
+                DropdownMenuItem(
+                  value: 'logout',
+                  child: Row(
+                    children: [
+                      Icon(Icons.exit_to_app),
+                      SizedBox(width: 8),
+                      Text('Sair'),
+                    ],
+                  ),
+                ),
+              ],
+              onChanged: (item) {
+                if (item == 'logout') {
+                  FirebaseAuth.instance.signOut();
+                }
+              },
             ),
-          );
-        },
+          ),
+        ],
+      ),
+      body: const Column(
+        children: [
+          Expanded(child: Messages()),
+          NewMessage(),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
