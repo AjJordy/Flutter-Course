@@ -1,4 +1,5 @@
 import 'package:chat/models/auth_data.dart';
+import 'package:chat/widgets/user_image_picker.dart';
 import 'package:flutter/material.dart';
 
 class AuthForm extends StatefulWidget {
@@ -33,20 +34,20 @@ class _AuthFormState extends State<AuthForm> {
               key: _formKey,
               child: Column(
                 children: [
-                  _authData.isLogin
-                      ? Container()
-                      : TextFormField(
-                          key: const ValueKey('name'),
-                          initialValue: _authData.name ?? "",
-                          decoration: const InputDecoration(labelText: 'Nome'),
-                          onChanged: (value) => _authData.name = value,
-                          validator: (value) {
-                            if (value == null || value.trim().length < 4) {
-                              return "Nome deve ter no mínimo 4 caracteres";
-                            }
-                            return null;
-                          },
-                        ),
+                  if (_authData.isSingup) const UserImagePicker(),
+                  if (_authData.isSingup)
+                    TextFormField(
+                      key: const ValueKey('name'),
+                      initialValue: _authData.name ?? "",
+                      decoration: const InputDecoration(labelText: 'Nome'),
+                      onChanged: (value) => _authData.name = value,
+                      validator: (value) {
+                        if (value == null || value.trim().length < 4) {
+                          return "Nome deve ter no mínimo 4 caracteres";
+                        }
+                        return null;
+                      },
+                    ),
                   TextFormField(
                     key: const ValueKey('email'),
                     decoration: const InputDecoration(labelText: 'E-mail'),

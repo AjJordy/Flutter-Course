@@ -40,20 +40,22 @@ class ChatScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: const Column(
-        children: [
-          Expanded(child: Messages()),
-          NewMessage(),
-        ],
+      body: const SafeArea(
+        child: Column(
+          children: [
+            Expanded(child: Messages()),
+            NewMessage(),
+          ],
+        ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          FirebaseFirestore.instance.collection('chat').add({
-            'text': 'Adicionado manualmente',
-          });
-        },
-        child: const Icon(Icons.add),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     FirebaseFirestore.instance.collection('chat').add({
+      //       'text': 'Adicionado manualmente',
+      //     });
+      //   },
+      //   child: const Icon(Icons.add),
+      // ),
     );
   }
 }
