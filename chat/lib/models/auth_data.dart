@@ -1,9 +1,12 @@
+import 'dart:io';
+
 enum AuthMode { login, singup }
 
 class AuthData {
   String? name;
   String? email;
   String? password;
+  File? image;
   AuthMode _mode = AuthMode.login;
 
   bool get isSingup {

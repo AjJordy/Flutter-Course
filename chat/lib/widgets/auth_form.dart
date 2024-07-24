@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:chat/models/auth_data.dart';
 import 'package:chat/widgets/user_image_picker.dart';
 import 'package:flutter/material.dart';
@@ -17,9 +19,23 @@ class _AuthFormState extends State<AuthForm> {
   _submit() {
     bool isValid = _formKey.currentState?.validate() ?? false;
     FocusScope.of(context).unfocus(); // Fecha o teclado
+    if (_authData.image == null && _authData.isSingup) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Precisamos da sua foto'),
+          backgroundColor: Theme.of(context).colorScheme.error,
+        ),
+      );
+      return;
+    }
+
     if (isValid) {
       widget.onSubmit(_authData);
     }
+  }
+
+  _handlePickedImage(File image) {
+    _authData.image = image;
   }
 
   @override
@@ -34,7 +50,7 @@ class _AuthFormState extends State<AuthForm> {
               key: _formKey,
               child: Column(
                 children: [
-                  if (_authData.isSingup) const UserImagePicker(),
+                  if (_authData.isSingup) UserImagePicker(_handlePickedImage),
                   if (_authData.isSingup)
                     TextFormField(
                       key: const ValueKey('name'),
